@@ -1,0 +1,11 @@
+thead tr:first-child th{
+    background-color: #d5dbe1;
+}
+
+thead tr:nth-child(2) th{
+    background-color:#d5dbe1;
+}
+
+.overallstats {
+    background-color: #92D050;
+}

@@ -1,0 +1,67 @@
+<div class="container-fluid">
+   
+   <div class="table-responsive-md">
+ 
+    <table class="table table-striped ">
+      <thead>
+        <tr class="table-secondary">
+          <th colspan="5" class="text-center green-line">
+            Scanner Tool xPath Comparison Report
+          </th>
+        </tr>
+        <tr class="table-secondary">
+          <th>
+          Page Name
+        </th>
+        <th>
+          Page URL
+        </th>
+        <th>
+        Current xPath
+        </th>
+      <th>
+        Previous xPath
+      </th>
+      <th>
+        Result
+      </th>
+       </tr>
+      </thead>
+      <tbody>
+        <ng-template ngFor let-item [ngForOf]="gridData" let-i="index">
+        <tr *ngIf="item.isOverAll">
+            <td>{{ item.PageName }}</td>
+            <td colspan="4">{{ item.text }}</td>
+          </tr>
+          <tr *ngIf="!item.isOverAll">
+            <td class="btn" (click)="showDetails(item,i)">{{ item.PageName }}
+            </td>
+            <td>{{ item.PageURL }}</td>
+            <td>{{ item.CurrentxPath }}</td>
+            <td>{{ item.PreviousxPath }}</td>
+            <td>{{ item.Result }}</td>
+        </tr>
+        <ng-template [ngIf]="i===expandedIndex">
+                <ng-template ngFor let-data [ngForOf]="item.detailsData"let-ind="index">
+                    <tr class="table-info"  *ngIf="data.text.length == 0">
+                        <td>{{ data.PageName }}</td>
+                        <td>{{data.PageURL}}</td>
+                        <td>{{data.CurrentxPath}}</td>
+                        <td>{{data.PreviousxPath}}</td>
+                        <td>{{data.Result}}</td>
+                    </tr>
+                    <tr *ngIf="data.text.length > 0" class="table-primary">
+                        <td>{{ data.PageName }}</td>
+                        <td colspan="4">{{ data.text }}</td>
+                    </tr>
+                   
+                </ng-template>
+            
+        </ng-template>
+      </ng-template>
+      </tbody>
+    </table>
+ 
+    </div>
+    
+  </div>
