@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {WindowRefService} from '../window-ref.service';
 // declare var $: any;
-import { Observable , of} from 'rxjs';
+import { Observable , of, VirtualTimeScheduler} from 'rxjs';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
@@ -79,25 +79,17 @@ export class ScannerComponent implements OnInit {
 	return this.URLList.filter(x => x.ApplicationName === appName && x.isScanned );
   }
 
-  async generateXPath(){
-	var data =   Object.assign([], this.URLList);
-	var i = 0;
-	//data.forEach((element, index) => {
-		for(var element of data){
-			this.updateStatus(element, false, true );
-		
-			await this.scanURL(element, 0)
-		}
-		
-	//})
-	// while(i < data.length )
-	// {
-		
-		 
-		
-		
-
-	// }
+  async generateXPath(index){
+	  
+	if(this.URLList.length > index)
+	{
+		var data =   Object.assign([], this.URLList);
+		this.updateStatus(data[index], false, true );
+		this.url  = data[index].applicationURL;
+		setTimeout(()=>{
+		 this.scanURL(data[index], index)
+		},5000);
+	}
 }
 
 
@@ -120,11 +112,8 @@ updateStatus(item, isScanned, isScanningProgress){
   }
 
     scanURL(item, index){
-	
-
 	// return new Promise<void>(resolve => {
-		
-	this.url  = item.applicationURL;
+	
   	this.xPath = [];
   	
   	var all = this.iframeId.contentWindow.document.getElementsByTagName("*");
@@ -138,6 +127,7 @@ updateStatus(item, isScanned, isScanningProgress){
 		 
 		}
 		this.updateStatus(item, true, false );
+		this.generateXPath(index+1);
 		//resolve()
 	
 	//});
