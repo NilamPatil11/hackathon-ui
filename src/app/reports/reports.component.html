@@ -28,7 +28,14 @@
        </tr>
       </thead>
       <tbody>
-        <ng-template ngFor let-item [ngForOf]="gridData" let-i="index">
+        <tr *ngFor="let data of reportData" [ngStyle]="{'background-color': data.status == 'New Field' ? '#f0ad4e' : ''}">
+          <td>{{data.page_name}}</td>
+          <td>{{data.url}}</td>
+          <td>{{data.fullXpath}}</td>
+          <td>{{data.fullXpath}}</td>
+          <td>{{data.status}}</td>
+        </tr>
+        <!-- <ng-template ngFor let-item [ngForOf]="gridData" let-i="index">
         <tr *ngIf="item.isOverAll">
             <td>{{ item.PageName }}</td>
             <td colspan="4">{{ item.text }}</td>
@@ -37,8 +44,10 @@
             <td class="btn" (click)="showDetails(item,i)">{{ item.PageName }}
             </td>
             <td>{{ item.PageURL }}</td>
-            <td>{{ item.CurrentxPath }}</td>
-            <td>{{ item.PreviousxPath }}</td>
+            <td >
+              
+              {{ item.CurrentxPath | json }}</td>
+            <td>{{ item.PreviousxPath | json }}</td>
             <td>{{ item.Result }}</td>
         </tr>
         <ng-template [ngIf]="i===expandedIndex">
@@ -58,7 +67,7 @@
                 </ng-template>
             
         </ng-template>
-      </ng-template>
+      </ng-template> -->
       </tbody>
     </table>
  

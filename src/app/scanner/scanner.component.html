@@ -24,13 +24,20 @@
 			                    <td *ngIf="!i" >Scanning in Progress</td>
 			                    <td *ngIf="i" ></td>
 			                    <td>{{ data.applicationURL }}</td>
-			                    <td></td>
+								<td><button class="btn btn-primary" type="button" disabled>
+									<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+									<span>Scanning...</span>
+								  </button>
+								</td>
 			                </tr>
 			                <tr class="table-success" *ngFor="let data of getCompletedApplicationUrls(item.appName); let i = index">
-			                    <td *ngIf="!i" >Scanned URLS</td>
-			                    <td *ngIf="i" ></td>
+			                    <td *ngIf="!i">Scanned URLS</td>
+			                    <td *ngIf="i"></td>
 			                    <td>{{ data.applicationURL }}</td>
-			                    <td></td>
+			                    <td>
+									<button class="btn btn-info" type="button" disabled>Completed</button>
+
+								</td>
 			                </tr>
 			                
 			            </ng-template>

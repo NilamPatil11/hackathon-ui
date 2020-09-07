@@ -9,3 +9,7 @@ thead tr:nth-child(2) th{
 .overallstats {
     background-color: #92D050;
 }
+
+table tbody tr td {
+    max-height: 50px !important;
+}
