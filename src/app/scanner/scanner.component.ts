@@ -4,6 +4,8 @@ import {WindowRefService} from '../window-ref.service';
 // declare var $: any;
 import { Observable , of, VirtualTimeScheduler} from 'rxjs';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { JsonPipe } from '@angular/common';
+import {AppHttpService} from './app-http.service';
 
 @Component({
   selector: 'app-scanner',
@@ -11,11 +13,11 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
   styleUrls: ['./scanner.component.css']
 })
 export class ScannerComponent implements OnInit {
-	url: string = "http://localhost:4200/features/dashboard";
+	url: string = window.location.protocol+"//"+window.location.hostname+"/features/dashboard";
 	//  "http://localhost:4402/features/dashboard&output=embed";
 	//urlSafe: SafeResourceUrl;
-	
-	target_origin: string = "http://localhost:4402";
+	api_url: string = window.location.protocol+"//"+window.location.hostname+":3009/xpathReq";
+	//target_origin: string = "http://localhost:4402";
 	xname:any;
 	idx:any;
 	iframeObj:any;
@@ -24,38 +26,48 @@ export class ScannerComponent implements OnInit {
 	totalscanned = 0;
 	appDetails : any;
 	iframeId:any;
+	allXpaths :  any;
+	oldXapth : any;
+	currentUrl: string;
 	URLList = [
 		{
 			"id":1,
+			"PageName" : "DQM Application Dashboard",
 		"ApplicationName" : "DQM",
-		"applicationURL": "http://localhost:4200/features/dashboard",
+		"applicationURL": `${location.origin}/features/dashboard`,
 		"isScanned": false,
 		"isScanningProgress":false,
 		"baseURL":"http://localhost:4200"
 		},
 		{
 			"id":2,
+			"PageName" : "DQM Application internal-losses",
 			"ApplicationName" : "DQM",
-			"applicationURL": "http://localhost:4200/features/internal-losses",
+			"applicationURL": `${location.origin}/features/internal-losses`,  //"http://localhost:4200/features/internal-losses",
 			"isScanned": false,
 			"isScanningProgress":false,
 			"baseURL":"http://localhost:4200"
 		},
 		{
 			"id":3,
+			"PageName" : "DQM Application external-events",
 			"ApplicationName" : "DQM",
-			"applicationURL": "http://localhost:4200/features/external-events",
+			"applicationURL": `${location.origin}/features/external-events`, // "http://localhost:4200/features/external-events",
 			"isScanned": false,
 			"isScanningProgress":false,
 			"baseURL":"http://localhost:4200"
 		}
 	]
 
-  constructor(public sanitizer: DomSanitizer, private winRef: WindowRefService) {
+  constructor(public sanitizer: DomSanitizer, private winRef: WindowRefService, private appSerice: AppHttpService) {
   		
    }
 
   ngOnInit(): void {
+	  localStorage.setItem("urlList", JSON.stringify(this.URLList));
+	  
+	  localStorage.removeItem("CurrentXpath");
+		localStorage.removeItem("oldXpath");
 	  //this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);
 	  var flags = {};
 	  this.appDetails =  this.URLList.map(x =>  { return { appName : x.ApplicationName, baseURL : x.baseURL } } )
@@ -80,6 +92,17 @@ export class ScannerComponent implements OnInit {
   }
 
   async generateXPath(index){
+	
+	  if(!index){
+		this.URLList.forEach(x => {
+			x.isScanned = false,
+			x.isScanningProgress = false
+		})
+		  if(localStorage.getItem("CurrentXpath")){
+			  this.oldXapth = JSON.parse(localStorage.getItem("CurrentXpath"));
+		  }
+		this.allXpaths = [];
+	  }
 	  
 	if(this.URLList.length > index)
 	{
@@ -89,6 +112,12 @@ export class ScannerComponent implements OnInit {
 		setTimeout(()=>{
 		 this.scanURL(data[index], index)
 		},5000);
+	}else{
+		localStorage.setItem("CurrentXpath",  JSON.stringify(this.allXpaths));
+		localStorage.setItem("oldXpath", JSON.stringify(this.oldXapth));
+		this.appSerice.saveXPath(this.api_url+"/saveXPath", {"XPATH":this.allXpaths,"URL":this.currentUrl,"APPNAME":"DQM Apllication","APPID":1,"PAGENAME":window.location.pathname}).subscribe((res) => {
+			console.log("Response==>", res);
+		})
 	}
 }
 
@@ -115,7 +144,7 @@ updateStatus(item, isScanned, isScanningProgress){
 	// return new Promise<void>(resolve => {
 	
   	this.xPath = [];
-  	
+  	this.currentUrl = this.iframeId.contentWindow.location.href;
   	var all = this.iframeId.contentWindow.document.getElementsByTagName("*");
 	// var all = this.iframeObj;
 		for (var i=0, max=all.length; i < max; i++) {
@@ -123,9 +152,9 @@ updateStatus(item, isScanned, isScanningProgress){
 		    var ele = all[i];
 		    var path = this.getElementXPath(ele);
 		    console.log("path:: "+path);
-		    this.xPath.push(path);
-		 
+			this.xPath.push(path);
 		}
+		this.allXpaths.push( {id: item.id, path: this.xPath})
 		this.updateStatus(item, true, false );
 		this.generateXPath(index+1);
 		//resolve()
