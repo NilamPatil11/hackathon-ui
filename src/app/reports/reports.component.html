@@ -32,7 +32,8 @@
           <td>{{data.page_name}}</td>
           <td>{{data.url}}</td>
           <td>{{data.fullXpath}}</td>
-          <td>{{data.fullXpath}}</td>
+          <td *ngIf="data.status=='New Field'">&nbsp;</td>
+          <td *ngIf="data.status=='Matching'">{{data.fullXpath}}</td>
           <td>{{data.status}}</td>
         </tr>
         <!-- <ng-template ngFor let-item [ngForOf]="gridData" let-i="index">

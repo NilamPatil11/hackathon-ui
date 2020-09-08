@@ -33,7 +33,7 @@ export class ScannerComponent implements OnInit {
 		{
 			"id":1,
 			"PageName" : "DQM Application Dashboard",
-		"ApplicationName" : "DQM",
+		"ApplicationName" : "Data Quality Monitoring",
 		"applicationURL": `${location.origin}/features/dashboard`,
 		"isScanned": false,
 		"isScanningProgress":false,
@@ -42,7 +42,7 @@ export class ScannerComponent implements OnInit {
 		{
 			"id":2,
 			"PageName" : "DQM Application internal-losses",
-			"ApplicationName" : "DQM",
+			"ApplicationName" : "Data Quality Monitoring",
 			"applicationURL": `${location.origin}/features/internal-losses`,  //"http://localhost:4200/features/internal-losses",
 			"isScanned": false,
 			"isScanningProgress":false,
@@ -51,7 +51,7 @@ export class ScannerComponent implements OnInit {
 		{
 			"id":3,
 			"PageName" : "DQM Application external-events",
-			"ApplicationName" : "DQM",
+			"ApplicationName" : "Data Quality Monitoring",
 			"applicationURL": `${location.origin}/features/external-events`, // "http://localhost:4200/features/external-events",
 			"isScanned": false,
 			"isScanningProgress":false,
@@ -154,7 +154,7 @@ updateStatus(item, isScanned, isScanningProgress){
 		    console.log("path:: "+path);
 			this.xPath.push(path);
 		}
-		this.allXpaths.push( {id: item.id, path: this.xPath})
+		this.allXpaths.push( {id: item.id, scanUrl:this.currentUrl, path: this.xPath})
 		this.updateStatus(item, true, false );
 		this.generateXPath(index+1);
 		//resolve()
